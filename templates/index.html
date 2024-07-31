@@ -107,8 +107,8 @@
             <ul>
                 {% for task in tasks %}
                 <li>
-                    {{ task['task'] }}
-                    <a href="{{ url_for('complete_task', task_id=task['id']) }}">
+                    {{ task.task }}
+                    <a href="{{ url_for('complete_task', task_id=task.id) }}">
                         <button>Complete</button>
                     </a>
                 </li>
