@@ -20,17 +20,12 @@ class UserDetails(db.Model):
 with app.app_context():
     db.create_all()
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def home():
-    selected_date = request.form.get('selected_date')
-    if selected_date:
-        tasks = UserDetails.query.filter(UserDetails.timestamp.like(f'{selected_date}%')).all()
-    else:
-        today = datetime.now().strftime('%Y-%m-%d')
-        tasks = UserDetails.query.filter(UserDetails.timestamp.like(f'{today}%')).all()
-        selected_date = today
+    today = datetime.now().strftime('%Y-%m-%d')
+    tasks = UserDetails.query.filter(UserDetails.timestamp.like(f'{today}%')).all()
     total_tasks = len(tasks)
-    return render_template('index.html', tasks=tasks, total_tasks=total_tasks, selected_date=selected_date)
+    return render_template('index.html', tasks=tasks, total_tasks=total_tasks)
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
