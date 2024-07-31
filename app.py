@@ -30,9 +30,11 @@ def home():
 @app.route('/add_task', methods=['POST'])
 def add_task():
     task = request.form['task']
-    if task:
-        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        new_task = UserDetails(task=task, timestamp=now)
+    task_date = request.form['task_date']
+    task_time = request.form['task_time']
+    if task and task_date and task_time:
+        task_datetime = f"{task_date} {task_time}:00"
+        new_task = UserDetails(task=task, timestamp=task_datetime)
         db.session.add(new_task)
         db.session.commit()
     return redirect(url_for('home'))
