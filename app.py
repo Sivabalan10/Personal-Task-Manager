@@ -1,36 +1,29 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
 
-# Create and connect to the database
-def get_db_connection():
-    conn = sqlite3.connect('records.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12723285:jR63zqZyb2@sql12.freesqldatabase.com:3306/sql12723285'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Create the database and user_details table
-def init_db():
-    conn = get_db_connection()
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS user_details (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            task TEXT NOT NULL,
-            timestamp TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+db = SQLAlchemy(app)
 
-init_db()
+# Define the user_details model
+class UserDetails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.String(255), nullable=False)
+    timestamp = db.Column(db.String(255), nullable=False)
+
+# Initialize the database
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def home():
-    conn = get_db_connection()
     today = datetime.now().strftime('%Y-%m-%d')
-    tasks = conn.execute('SELECT * FROM user_details WHERE DATE(timestamp) = ?', (today,)).fetchall()
-    conn.close()
+    tasks = UserDetails.query.filter(UserDetails.timestamp.like(f'{today}%')).all()
     total_tasks = len(tasks)
     return render_template('index.html', tasks=tasks, total_tasks=total_tasks)
 
@@ -38,19 +31,18 @@ def home():
 def add_task():
     task = request.form['task']
     if task:
-        conn = get_db_connection()
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        conn.execute('INSERT INTO user_details (task, timestamp) VALUES (?, ?)', (task, now))
-        conn.commit()
-        conn.close()
+        new_task = UserDetails(task=task, timestamp=now)
+        db.session.add(new_task)
+        db.session.commit()
     return redirect(url_for('home'))
 
 @app.route('/complete_task/<int:task_id>')
 def complete_task(task_id):
-    conn = get_db_connection()
-    conn.execute('DELETE FROM user_details WHERE id = ?', (task_id,))
-    conn.commit()
-    conn.close()
+    task = UserDetails.query.get(task_id)
+    if task:
+        db.session.delete(task)
+        db.session.commit()
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
