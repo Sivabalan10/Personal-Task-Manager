@@ -37,10 +37,13 @@
         .form-container {
             margin-bottom: 20px;
         }
-        .form-container input[type="text"] {
+        .form-container input[type="text"],
+        .form-container input[type="date"],
+        .form-container input[type="time"] {
             width: calc(100% - 120px);
             padding: 10px;
             font-size: 16px;
+            margin-bottom: 10px;
         }
         .form-container button {
             padding: 10px 20px;
@@ -99,6 +102,8 @@
         <div class="form-container">
             <form action="/add_task" method="post">
                 <input type="text" name="task" placeholder="Enter task or event" required>
+                <input type="date" name="task_date" required>
+                <input type="time" name="task_time" required>
                 <button type="submit">Add Task</button>
             </form>
         </div>
@@ -107,7 +112,7 @@
             <ul>
                 {% for task in tasks %}
                 <li>
-                    {{ task.task }}
+                    {{ task.task }} ({{ task.timestamp }})
                     <a href="{{ url_for('complete_task', task_id=task.id) }}">
                         <button>Complete</button>
                     </a>
