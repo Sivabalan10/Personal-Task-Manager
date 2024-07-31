@@ -107,8 +107,14 @@
                 <button type="submit">Add Task</button>
             </form>
         </div>
+        <div class="form-container">
+            <form action="/" method="post">
+                <input type="date" name="selected_date" value="{{ selected_date }}">
+                <button type="submit">Filter Tasks</button>
+            </form>
+        </div>
         <div class="task-list">
-            <h2>Today's Tasks</h2>
+            <h2>Tasks for {{ selected_date }}</h2>
             <ul>
                 {% for task in tasks %}
                 <li>
