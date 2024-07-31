@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000, #003366);
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            background: #002244;
+            padding: 15px;
+            border-bottom: 2px solid #004080;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 0 15px;
+            font-size: 18px;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container input[type="text"] {
+            width: calc(100% - 120px);
+            padding: 10px;
+            font-size: 16px;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #004080;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background: #003366;
+        }
+        .task-list {
+            margin-top: 20px;
+        }
+        .task-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .task-list li {
+            background: #001f3f;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-list button {
+            background: #c82333;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .task-list button:hover {
+            background: #a71d2a;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 10px;
+            background: #002244;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="#">Home</a>
+            <a href="#">Your Health</a>
+            <a href="#">Projects</a>
+            <a href="#">Finance Report</a>
+        </div>
+        <div class="form-container">
+            <form action="/add_task" method="post">
+                <input type="text" name="task" placeholder="Enter task or event" required>
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+        <div class="task-list">
+            <h2>Today's Tasks</h2>
+            <ul>
+                {% for task in tasks %}
+                <li>
+                    {{ task['task'] }}
+                    <a href="{{ url_for('complete_task', task_id=task['id']) }}">
+                        <button>Complete</button>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            <p>Total Tasks: {{ total_tasks }}</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Siva's Task Manager</p>
+            <p>&copy; Built by Avis Industry</p>
+        </div>
+    </div>
+</body>
+</html>
