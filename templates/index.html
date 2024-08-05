@@ -89,9 +89,24 @@
             background: #002244;
             text-align: center;
         }
+        /* Loading animation styles */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
+    <div class="loading" id="loading">Loading...</div>
     <div class="container">
         <div class="navbar">
             <a href="#">Home</a>
@@ -100,7 +115,7 @@
             <a href="#">Finance Report</a>
         </div>
         <div class="form-container">
-            <form action="/add_task" method="post">
+            <form action="/add_task" method="post" onsubmit="showLoading()">
                 <input type="text" name="task" placeholder="Enter task or event" required>
                 <input type="date" name="task_date" required>
                 <input type="time" name="task_time" required>
@@ -108,7 +123,7 @@
             </form>
         </div>
         <div class="form-container">
-            <form action="/" method="post">
+            <form action="/" method="post" onsubmit="showLoading()">
                 <input type="date" name="selected_date" value="{{ selected_date }}">
                 <button type="submit">Filter Tasks</button>
             </form>
@@ -119,8 +134,8 @@
                 {% for task in tasks %}
                 <li>
                     {{ task.task }} ({{ task.timestamp }})
-                    <a href="{{ url_for('complete_task', task_id=task.id) }}">
-                        <button>Complete</button>
+                    <a href="{{ url_for('complete_task', task_id=task.id) }}" onclick="showLoading()">
+                        <button type="button">Complete</button>
                     </a>
                 </li>
                 {% endfor %}
@@ -132,5 +147,10 @@
             <p>&copy; Built by Avis Industry</p>
         </div>
     </div>
+    <script>
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
